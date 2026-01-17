@@ -9,6 +9,9 @@ Improves resolution of Definition of Done in design plans.
 - Design document file is created in Phase 3 with DoD and placeholders for Summary/Glossary
 - writing-design-plans skill now appends body sections and generates only Summary/Glossary
 
+**Fixed:**
+- Corrected stale skill name references ("subagent-driven-development", "executing-plans") to "executing-an-implementation-plan"
+
 ## ed3d-plan-and-execute 1.3.0
 
 Adds legibility header to design plans for human reviewers.
