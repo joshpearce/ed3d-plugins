@@ -1,5 +1,14 @@
 # Changelog
 
+## ed3d-plan-and-execute 1.4.2
+
+Simplifies experimental execution workflow.
+
+**Changed:**
+- Experimental skill now reads first 10 lines (not 3) to capture Goal in header
+- Subagents (task-implementor, bug-fixer) now read entire phase file instead of extracted sections
+- Removed context window extraction logic — simpler approach, let subagents see full phase context
+
 ## ed3d-plan-and-execute 1.4.1
 
 Adds experimental execution workflow and task markers. (1.4.0 was a buggy mis-push.)

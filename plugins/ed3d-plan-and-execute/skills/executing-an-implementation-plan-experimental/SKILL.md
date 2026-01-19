@@ -61,14 +61,14 @@ If `docs/implementation-plans/` doesn't exist or is empty, ask the user to provi
 # List phase files
 ls [plan-directory]/phase_*.md
 
-# For each file, get the title (first 3 lines contain the header)
-head -3 [plan-directory]/phase_01.md
+# For each file, get the header (first 10 lines include title and Goal)
+head -10 [plan-directory]/phase_01.md
 
 # Get task/subcomponent structure without reading full content
 grep -E "START_TASK_|START_SUBCOMPONENT_" [plan-directory]/phase_01.md
 ```
 
-The first line is typically `# [Phase Title]`. Extract that title for the TodoWrite entry.
+The header includes the title (`# [Phase Title]`) and `**Goal:**` line. Extract the title for the TodoWrite entry.
 
 The grep output shows the task structure, e.g.:
 ```
@@ -130,57 +130,27 @@ If a functionality task (code that does something) has no tests specified:
 
 Do NOT implement functionality without tests. Missing tests = plan gap, not something to skip.
 
-**Execute all tasks in sequence using markers for efficient extraction.**
-
-#### Extracting Tasks with Context Window
-
-Use the HTML comment markers to extract only the relevant content. Give each subagent a **context window** — the task plus adjacent tasks for awareness.
-
-**For standalone tasks:**
-- Task 1: extract Task 1 + Task 2 (next)
-- Task 2: extract Task 1 (prev) + Task 2 + Task 3 (next)
-- Task N (last): extract Task N-1 (prev) + Task N
-
-**For subcomponents:**
-- Subcomponent A (tasks 3-5): extract Task 2 (before subcomponent) + Tasks 3-5 + Task 6 (after subcomponent)
-
-**Extraction approach:**
-
-```bash
-# Extract a single task (e.g., Task 2) — content between START_TASK_2 and END_TASK_2
-sed -n '/<!-- START_TASK_2 -->/,/<!-- END_TASK_2 -->/p' phase_01.md
-
-# Extract a subcomponent — content between START_SUBCOMPONENT_A and END_SUBCOMPONENT_A
-sed -n '/<!-- START_SUBCOMPONENT_A/,/<!-- END_SUBCOMPONENT_A -->/p' phase_01.md
-```
-
-Combine extractions for the context window. The subagent receives:
-- The task(s) it must implement (primary)
-- Adjacent task(s) for context (it should NOT implement these, just be aware of them)
-
-#### Task Dispatch
-
-For each task or subcomponent, dispatch `task-implementor-fast`:
+**Execute all tasks in sequence.** For each task, dispatch `task-implementor-fast` with the phase file path:
 
 ```
 <invoke name="Task">
 <parameter name="subagent_type">ed3d-plan-and-execute:task-implementor-fast</parameter>
 <parameter name="description">Implementing Phase X, Task Y: [description]</parameter>
 <parameter name="prompt">
-  Implement Task N.
+  Implement Task N from the phase file.
 
-  **YOUR TASK (implement this):**
-  [extracted content between START_TASK_N and END_TASK_N]
+  Phase file: [absolute path to phase file]
+  Task number: N
 
-  **CONTEXT (do NOT implement, just for awareness):**
-  [adjacent task(s) for context]
+  Read the phase file and implement Task N (look for `<!-- START_TASK_N -->`).
 
   Your job is to:
-  1. Apply all relevant skills, such as (if available) ed3d-house-style:coding-effectively
-  2. Implement exactly what YOUR TASK specifies
-  3. Verify with tests/build/lint
-  4. Commit your work
-  5. Report back with evidence
+  1. Read the phase file to understand context
+  2. Apply all relevant skills, such as (if available) ed3d-house-style:coding-effectively
+  3. Implement exactly what Task N specifies
+  4. Verify with tests/build/lint
+  5. Commit your work
+  6. Report back with evidence
 
   Work from: [directory]
 
@@ -189,31 +159,27 @@ For each task or subcomponent, dispatch `task-implementor-fast`:
 </invoke>
 ```
 
-**For subcomponents**, dispatch with all tasks in the subcomponent as "YOUR TASK" and the adjacent tasks as context:
+**For subcomponents** (grouped tasks), dispatch once for all tasks in the subcomponent:
 
 ```
 <invoke name="Task">
 <parameter name="subagent_type">ed3d-plan-and-execute:task-implementor-fast</parameter>
 <parameter name="description">Implementing Phase X, Subcomponent A (Tasks 3-5): [description]</parameter>
 <parameter name="prompt">
-  Implement Subcomponent A (Tasks 3, 4, 5).
+  Implement Subcomponent A (Tasks 3, 4, 5) from the phase file.
 
-  **YOUR TASKS (implement all of these):**
-  [extracted content between START_SUBCOMPONENT_A and END_SUBCOMPONENT_A]
+  Phase file: [absolute path to phase file]
+  Tasks: 3, 4, 5 (look for `<!-- START_SUBCOMPONENT_A -->`)
 
-  **CONTEXT (do NOT implement, just for awareness):**
-  Task 2 (before):
-  [extracted Task 2]
-
-  Task 6 (after):
-  [extracted Task 6]
+  Read the phase file and implement all tasks in this subcomponent.
 
   Your job is to:
-  1. Apply all relevant skills, such as (if available) ed3d-house-style:coding-effectively
-  2. Implement all tasks in sequence
-  3. Verify with tests/build/lint after completing all tasks
-  4. Commit your work (one commit per task, or logical commits)
-  5. Report back with evidence for each task
+  1. Read the phase file to understand context
+  2. Apply all relevant skills, such as (if available) ed3d-house-style:coding-effectively
+  3. Implement all tasks in sequence
+  4. Verify with tests/build/lint after completing all tasks
+  5. Commit your work (one commit per task, or logical commits)
+  6. Report back with evidence for each task
 
   Work from: [directory]
 
@@ -250,7 +216,7 @@ The phase changed too much for a single review. Chunk the review:
 4. Run code review for second half of tasks (commits for tasks N/2+1 through N)
 5. Fix any issues found
 
-**When issues are found**, dispatch `task-bug-fixer` with relevant task context:
+**When issues are found**, dispatch `task-bug-fixer` with the phase file:
 
 ```
 <invoke name="Task">
@@ -259,11 +225,12 @@ The phase changed too much for a single review. Chunk the review:
 <parameter name="prompt">
   Fix issues from code review for Phase X.
 
+  Phase file: [absolute path to phase file]
+
   Code reviewer found these issues:
   [list all issues - Critical, Important, and Minor]
 
-  **TASK CONTEXT (for reference):**
-  [extracted task(s) that the issues relate to, with adjacent context]
+  Read the phase file to understand the tasks and context.
 
   Your job is to:
   1. Understand root cause of each issue
@@ -279,8 +246,6 @@ The phase changed too much for a single review. Chunk the review:
 </parameter>
 </invoke>
 ```
-
-Use the same extraction approach as task dispatch — extract the relevant task(s) plus adjacent context so the bug-fixer understands the surrounding code.
 
 After bug-fixer completes, re-review per the `requesting-code-review` skill. Continue loop until zero issues.
 
@@ -432,8 +397,6 @@ You: I'm using the `executing-an-implementation-plan` skill.
 |--------|---------|
 | "I'll read all phases upfront to understand the full picture" | No. Read one phase at a time. Context limits are real. |
 | "I'll skip the read step, I remember what's in the file" | No. Always read just-in-time. Context may have been compacted. |
-| "I'll pass the whole phase file to task-implementor" | No. Extract only the relevant task(s) using markers. Context limits are real. |
-| "I'll skip the context window, subagent only needs its task" | No. Adjacent tasks provide important context. Extract task + neighbors. |
 | "I'll review after each task to catch issues early" | No. Review once per phase. Task-level review wastes context. |
 | "Context error on review, I'll skip the review" | No. Chunk the review into halves. Never skip review. |
 | "Minor issues can wait" | No. Fix ALL issues including Minor. |
