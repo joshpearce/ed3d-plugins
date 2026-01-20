@@ -8,6 +8,11 @@ argument-hint: [absolute-plan-dir] [absolute-working-dir]
 **Implementation plan directory:** `$1`
 **Working directory:** `$2`
 
+This execution workflow uses:
+- Just-in-time phase loading (reads one phase at a time)
+- Task/subcomponent markers for structure
+- Per-phase code review (not per-task)
+
 ## Before Starting
 
 Both arguments MUST be absolute paths. Verify they exist:
@@ -30,4 +35,4 @@ If either verification fails, stop and report the error to the user.
 2. **Engage the skill:** Use your Skill tool to invoke `executing-an-implementation-plan`
 3. **When the skill asks for a plan path:** The user has already provided it: `$1`. Do not ask again.
 
-The skill should execute all phases in the plan directory. Follow it exactly as written.
+The skill should execute all phases in the plan directory using the just-in-time loading workflow. Follow it exactly as written.

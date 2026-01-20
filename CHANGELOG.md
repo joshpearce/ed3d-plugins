@@ -1,5 +1,20 @@
 # Changelog
 
+## ed3d-plan-and-execute 1.5.0
+
+Promotes experimental execution workflow to stable.
+
+**Changed:**
+- Execution workflow now uses just-in-time phase loading (reads one phase at a time, not all upfront)
+- Code review happens once per phase instead of between every task
+- TodoWrite structure: three entries per phase (Read, Execute, Code review) with absolute paths and titles
+- Subagents receive phase file path and read it themselves
+
+**Removed:**
+- Experimental skill and command (merged into stable)
+- Task grouping by subcomponent (plan phases now define grouping via markers)
+- Task-level code review (replaced with phase-level review)
+
 ## ed3d-plan-and-execute 1.4.3
 
 Removes misleading directive from implementation plan header.
