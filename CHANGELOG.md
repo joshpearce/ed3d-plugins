@@ -1,5 +1,9 @@
 # Changelog
 
+## ed3d-plan-and-execute 1.7.1
+
+- `/how-to-customize` given more specific instructions to actually repeat the information verbatim.
+
 ## ed3d-plan-and-execute 1.7.0
 
 Adds project-specific guidance files for customizing design and implementation plans.
