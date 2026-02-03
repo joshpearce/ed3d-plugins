@@ -1,5 +1,16 @@
 # Changelog
 
+## ed3d-plan-and-execute 1.9.2
+
+Ties tests explicitly to acceptance criteria; removes test code from implementation plans.
+
+**Changed:**
+- `writing-design-plans`: Functionality phases must have tests that verify the specific ACs they cover; phase not "done" until tests exist for each listed AC case
+- `writing-implementation-plans`: Functionality tasks include "Verifies: AC1.1, AC1.3" field; tests described by AC reference, not full code
+- `writing-implementation-plans`: Task-implementor generates actual test code at execution time with fresh codebase context
+
+**Why:** Test code in plans becomes stale (wrong imports, mock patterns). AC text like "Invalid password returns 401" is already a clear test spec.
+
 ## ed3d-plan-and-execute 1.9.1
 
 Strengthens acceptance criteria generation and adds traceability to implementation plans.
