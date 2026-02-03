@@ -217,13 +217,24 @@ The design plan distinguishes between infrastructure phases (verified operationa
 - Don't force TDD on scaffolding
 - Verification = operational success
 - "npm install succeeds" is valid verification
-- Typically don't reference ACs (no behavior to verify)
+- **Verifies: None** — explicitly state this, don't invent ACs for setup phases
 
 **Functionality tasks** (code that does something):
 - Tests are deliverables alongside code
 - Each task lists which ACs it verifies (e.g., "Verifies: AC1.1, AC1.3")
 - Tests must verify those specific AC cases, not just "test the code"
 - Phase ends with passing tests for all ACs listed in the phase's AC Coverage
+
+**Test behavior, not implementation.**
+- Test that your function produces the right output, not that it called dependencies a certain way
+- If you refactored internals but behavior stayed the same, would the test still pass? If no, you're testing implementation details.
+- The AC is the spec: "Invalid password returns 401" means test the response, not verify that `bcrypt.compare()` was called
+
+**What doesn't need tests:**
+- Types (TypeScript compiler verifies these)
+- Dependencies that have their own tests (don't re-test them through your code)
+- How you call things (test the result, not the wiring)
+- Infrastructure/setup (verify operationally)
 
 **Subcomponent task grouping.** Design plans structure phases as subcomponents: types → implementation → tests. When writing tasks for a subcomponent, wrap them in subcomponent markers (see "Task and Subcomponent Markers" section):
 
@@ -682,6 +693,11 @@ These are violations of the skill requirements:
 | "I'll clone the repo to check the docs" | No. Use internet-researcher for docs. Only clone (remote-code-researcher) for source code investigation. |
 | "Phase has external deps but I'll skip research" | Research is mandatory when phase involves external dependencies. Surface unknowns now. |
 | "Test requirements can be generated during execution" | No. Test requirements must exist before execution starts. Code reviewer uses them. |
+| "This type needs unit tests" | No. TypeScript compiler verifies types. Don't test what the compiler checks. |
+| "Should test that this calls the dependency correctly" | No. Test behavior (the result), not wiring (how you called things). |
+| "Dependency is used here, should verify it works" | No. Dependencies have their own tests. Test YOUR code's behavior. |
+| "More tests = better coverage" | Wrong tests = noise. Test the ACs, nothing more. |
+| "Phase doesn't have ACs but I'll add some tests anyway" | No. Explicitly state "Verifies: None" for infrastructure phases. Don't invent work. |
 | "Acceptance Criteria are clear, don't need test requirements" | Test requirements map criteria to specific tests. Execution needs this mapping. |
 | "I'll skip test requirements, user chose batch mode" | Batch mode skips interactive approval. Test requirements are still generated and written. |
 | "Test requirements task is optional" | No. It's a tracked task with dependencies. Must complete before execution handoff. |
