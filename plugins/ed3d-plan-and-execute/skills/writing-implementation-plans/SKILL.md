@@ -281,20 +281,21 @@ The execution agent uses these markers to identify related tasks. The tests task
 
 This phase implements and tests:
 
-### AC1: [Criterion heading from design plan]
-- **AC1.1 Success:** [Copied literally from design plan]
-- **AC1.3 Failure:** [Copied literally from design plan]
+### {slug}.AC1: [Criterion heading from design plan]
+- **{slug}.AC1.1 Success:** [Copied literally from design plan]
+- **{slug}.AC1.3 Failure:** [Copied literally from design plan]
 
-### AC2: [Criterion heading from design plan]
-- **AC2.1 Success:** [Copied literally from design plan]
+### {slug}.AC2: [Criterion heading from design plan]
+- **{slug}.AC2.1 Success:** [Copied literally from design plan]
 
 ---
 ```
 
 **AC Coverage rules:**
 - Copy AC text literally from the design plan—do not paraphrase
+- Use the full scoped AC identifier (e.g., `oauth2-svc-authn.AC1.1`), not bare `AC1.1`
 - Include ONLY the ACs this phase implements and tests
-- Include both the criterion heading (AC1, AC2) and the specific cases (AC1.1, AC1.3)
+- Include both the criterion heading (`{slug}.AC1`) and the specific cases (`{slug}.AC1.1`, `{slug}.AC1.3`)
 - Tasks in this phase must produce tests that verify these specific cases
 - An AC case may appear in multiple phases if partially addressed, but final phase must complete it
 
@@ -623,7 +624,7 @@ git commit -m "chore: initialize project structure"
 <!-- START_TASK_N -->
 ### Task N: [Component Name]
 
-**Verifies:** AC1.1, AC1.3 (list specific AC cases this task tests)
+**Verifies:** {slug}.AC1.1, {slug}.AC1.3 (list specific AC cases this task tests)
 
 **Files:**
 - Create: `exact/path/to/file.py`
@@ -635,8 +636,8 @@ git commit -m "chore: initialize project structure"
 
 **Testing:**
 Tests must verify each AC listed above:
-- AC1.1: [brief description of what test should verify]
-- AC1.3: [brief description of what test should verify]
+- {slug}.AC1.1: [brief description of what test should verify]
+- {slug}.AC1.3: [brief description of what test should verify]
 
 Follow project testing patterns. Task-implementor generates actual test code at execution time.
 

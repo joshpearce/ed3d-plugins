@@ -72,8 +72,8 @@ The first defines what the boundary looks like. The second implements behavior �
 The file is created by starting-a-design-plan Phase 3. This skill appends to that file.
 
 **Expected naming convention:**
-- Good: `docs/design-plans/2025-01-18-oauth2-service-auth.md`
-- Good: `docs/design-plans/2025-01-18-user-profile-redesign.md`
+- Good: `docs/design-plans/2025-01-18-oauth2-svc-authn.md`
+- Good: `docs/design-plans/2025-01-18-user-prof-redesign.md`
 - Bad: `docs/design-plans/design.md`
 - Bad: `docs/design-plans/new-feature.md`
 
@@ -181,11 +181,11 @@ See "After Writing: Generating Summary and Glossary" below for the extraction pr
 
 **The rule:** If a phase implements functionality, it must include tests that verify the specific acceptance criteria it claims to cover. Tests are a deliverable of the phase, not a separate "testing phase" later.
 
-**Tying tests to ACs:** A functionality phase lists which ACs it covers (e.g., AC1.1, AC1.3, AC2.1). The phase is not "done" until tests exist that verify each of those specific cases. This creates traceability: AC → phase → test.
+**Tying tests to ACs:** A functionality phase lists which ACs it covers (e.g., `oauth2-svc-authn.AC1.1`, `oauth2-svc-authn.AC1.3`). The phase is not "done" until tests exist that verify each of those specific cases. This creates traceability: AC → phase → test.
 
 **Don't over-engineer infrastructure verification.** You don't need unit tests for package.json. "npm install succeeds" is sufficient verification for a dependency setup phase. Infrastructure phases typically don't list ACs—their verification is operational.
 
-**Do require tests for functionality.** Any code that does something needs tests that prove it does that thing. These tests must map to specific ACs, not just "test the code." If a phase covers AC1.3 ("Invalid password returns 401"), a test must verify exactly that.
+**Do require tests for functionality.** Any code that does something needs tests that prove it does that thing. These tests must map to specific ACs, not just "test the code." If a phase covers `oauth2-svc-authn.AC1.3` ("Invalid password returns 401"), a test must verify exactly that.
 
 **Tests can evolve.** A test written in Phase 2 may be modified in Phase 4 as requirements expand. This is expected. The constraint is that Phase 2 ends with passing tests for the ACs Phase 2 claims to cover.
 
@@ -454,30 +454,32 @@ Each criterion must be **observable and testable**:
 
 ### Structure
 
-Number each acceptance criterion and its cases for traceability:
+**Scoped AC format:** `{slug}.AC{N}.{M}` where `{slug}` is extracted from the design plan filename (everything after `YYYY-MM-DD-`, excluding `.md`).
+
+For design plan `2025-01-18-oauth2-svc-authn.md`, the slug is `oauth2-svc-authn`. All AC identifiers use this prefix:
 
 ```markdown
 ## Acceptance Criteria
 
-### AC1: Users can authenticate
-- **AC1.1 Success:** User with valid credentials receives auth token
-- **AC1.2 Success:** Token contains correct user ID and permissions
-- **AC1.3 Failure:** Invalid password returns 401 with generic error (no password hint)
-- **AC1.4 Failure:** Locked account returns 403 with lockout duration
-- **AC1.5 Edge:** Empty password field shows validation error before submission
+### oauth2-svc-authn.AC1: Users can authenticate
+- **oauth2-svc-authn.AC1.1 Success:** User with valid credentials receives auth token
+- **oauth2-svc-authn.AC1.2 Success:** Token contains correct user ID and permissions
+- **oauth2-svc-authn.AC1.3 Failure:** Invalid password returns 401 with generic error (no password hint)
+- **oauth2-svc-authn.AC1.4 Failure:** Locked account returns 403 with lockout duration
+- **oauth2-svc-authn.AC1.5 Edge:** Empty password field shows validation error before submission
 
-### AC2: Sessions persist across page refresh
-- **AC2.1 Success:** ...
-- **AC2.2 Failure:** ...
+### oauth2-svc-authn.AC2: Sessions persist across page refresh
+- **oauth2-svc-authn.AC2.1 Success:** ...
+- **oauth2-svc-authn.AC2.2 Failure:** ...
 ...
 
-### AC[N]: Cross-Cutting Behaviors
-- **AC[N].1:** Token expiration triggers re-authentication prompt (not silent failure)
-- **AC[N].2:** All API errors include correlation ID for debugging
+### oauth2-svc-authn.AC[N]: Cross-Cutting Behaviors
+- **oauth2-svc-authn.AC[N].1:** Token expiration triggers re-authentication prompt (not silent failure)
+- **oauth2-svc-authn.AC[N].2:** All API errors include correlation ID for debugging
 - ...
 ```
 
-**Why numbered:** Implementation phases reference specific ACs they implement (e.g., "This phase implements AC1.1, AC1.3, AC2.1"). Numbered IDs enable precise traceability from design → implementation → tests.
+**Why scoped:** Multiple plan-and-execute rounds accumulate tests in the same codebase. Scoped identifiers prevent collision—`oauth2-svc-authn.AC2.1` and `user-prof.AC2.1` are unambiguous. Implementation phases, task specs, and test names all use the full scoped identifier.
 
 ### Validation
 

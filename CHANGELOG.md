@@ -1,5 +1,22 @@
 # Changelog
 
+## ed3d-plan-and-execute 1.10.0
+
+Scoped acceptance criteria for cross-plan uniqueness.
+
+**New:**
+- AC identifiers now use scoped format `{slug}.AC{N}.{M}` (e.g., `oauth2-svc-authn.AC1.1`) to prevent collisions across multiple plan-and-execute rounds
+- Design plan naming now prompts user explicitly via AskUserQuestion — supports ticket names (e.g., `PROJ-1234`) or descriptive slugs
+- Slug naming guidance: prefer terse unambiguous names (`authn` not `authentication`, but not `auth` since ambiguous with `authz`)
+
+**Changed:**
+- `starting-a-design-plan`: Added Step 1 to get design plan name before file creation
+- `starting-an-implementation-plan`: Slug definition now documents its three uses (directory, worktree, AC scope)
+- `writing-design-plans`: AC structure uses scoped format with slug prefix
+- `writing-implementation-plans`: Task templates and AC coverage sections use scoped format
+- `executing-an-implementation-plan`: AC coverage check references scoped format
+- All examples updated to use terse slugs (e.g., `oauth2-svc-authn` instead of `oauth2-service-auth`)
+
 ## ed3d-plan-and-execute 1.9.8
 
 Disables user invocation of skills.
