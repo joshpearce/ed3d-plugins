@@ -1,5 +1,16 @@
 # Changelog
 
+## ed3d-plan-and-execute 1.20.0
+
+Add soft-reset option to the branch finishing workflow.
+
+**New:**
+- `finishing-a-development-branch`: Option 3 "Soft reset for file-by-file review" — resets to merge base while keeping all changes staged, creates a backup tag and a `.COMMIT_MSG` template with distilled commit message
+
+**Changed:**
+- Options renumbered: Keep as-is is now Option 4, Discard is now Option 5
+- Quick reference table and common mistakes section updated accordingly
+
 ## ed3d-extending-claude 1.0.4
 
 Add model-level testing guidance to testing-skills-with-subagents.
