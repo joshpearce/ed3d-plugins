@@ -41,7 +41,7 @@
         {
             "name": "ed3d-basic-agents",
             "description": "Core agents for general-purpose tasks. Other plugins expect this to exist.",
-            "version": "1.0.2",
+            "version": "1.1.0",
             "source": "./plugins/ed3d-basic-agents",
             "author": {
                 "name": "Ed",
@@ -63,7 +63,7 @@
         {
             "name": "ed3d-extending-claude",
             "description": "Knowledge skills for extending Claude Code: creating plugins, commands, agents, skills, hooks, and MCP servers",
-            "version": "1.0.3",
+            "version": "1.0.4",
             "source": "./plugins/ed3d-extending-claude",
             "author": {
                 "name": "Ed",

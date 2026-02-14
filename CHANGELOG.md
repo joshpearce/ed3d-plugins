@@ -1,5 +1,23 @@
 # Changelog
 
+## ed3d-extending-claude 1.0.4
+
+Add model-level testing guidance to testing-skills-with-subagents.
+
+**Changed:**
+- `testing-skills-with-subagents`: RED phase should use production-level model (default: Sonnet); GREEN/REFACTOR phases should use one tier down (default: Haiku) to ensure skill clarity under weaker reasoning
+- Quick reference table now includes model column
+
+## ed3d-basic-agents 1.1.0
+
+Add fan-out analysis skill for large corpus processing.
+
+**New:**
+- `doing-a-simple-two-stage-fanout` skill: orchestrates parallel Worker subagents, Critic review subagents, and a Summarizer for analyzing corpora that exceed a single agent's context window
+- `compute_layout.py` helper script for computing segment counts, agent assignments, and context window budgets
+- `diagram-templates.md` reference with Mermaid and Graphviz templates for visualizing fan-out pipelines
+- First `user-invocable: true` skill in this plugin
+
 ## [ed3d-hook-skill-reinforcement] 1.0.1, [ed3d-plan-and-execute] 1.10.1, [ed3d-basic-agents] 1.0.2, [ed3d-extending-claude] 1.0.3
 
 Remove stale `<available_skills>` XML tag references that no longer match how Claude Code injects skill lists.
