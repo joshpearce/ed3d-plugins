@@ -49,15 +49,16 @@ Or ask: "This branch split from main - is that correct?"
 
 ### Step 3: Present Options
 
-Present exactly these 4 options in `AskUserQuestion`.
+Present exactly these 5 options in `AskUserQuestion`.
 
 ```
 Implementation complete. What would you like to do?
 
 1. Merge back to <base-branch> locally
 2. Push and create a Pull Request
-3. Keep the branch as-is (I'll handle it later, or I have more work to do)
-4. Discard this work
+3. Soft reset for file-by-file review (keeps backup tag)
+4. Keep the branch as-is (I'll handle it later, or I have more work to do)
+5. Discard this work
 
 Which option?
 ```
@@ -106,13 +107,56 @@ EOF
 
 Then: Update project context (Step 5), then cleanup worktree (Step 6)
 
-#### Option 3: Keep As-Is
+#### Option 3: Soft Reset for Review
+
+```bash
+# Determine merge base
+MERGE_BASE=$(git merge-base HEAD <base-branch>)
+
+# Tag current HEAD for safety
+git tag backup/<feature-branch>
+
+# Distill commit messages into a summary
+git log --pretty=format:"%s%n%n%b" $MERGE_BASE..HEAD
+```
+
+Use the commit log output to distill a coherent, concise commit message summarizing the work. Write it to `.COMMIT_MSG` in the project root with these instructions at the top:
+
+```
+# Suggested commit message (edit as needed, then use with):
+#   git commit -t .COMMIT_MSG
+#
+# When done, clean up:
+#   rm .COMMIT_MSG
+#   git tag -d backup/<feature-branch>
+
+<distilled commit message>
+```
+
+Lines starting with `#` are stripped by `git commit -t` (template mode), which opens the editor with this content.
+
+```bash
+# Soft reset to merge base
+git reset --soft $MERGE_BASE
+```
+
+Report:
+```
+Reset complete. All changes are now staged.
+
+- Backup tag: backup/<feature-branch> (view original commits with `git log backup/<feature-branch>`)
+- Suggested commit message: .COMMIT_MSG (use with `git commit -t .COMMIT_MSG`)
+```
+
+**Don't cleanup worktree.**
+
+#### Option 4: Keep As-Is
 
 Report: "Keeping branch <name>. Worktree preserved at <path>."
 
 **Don't cleanup worktree.**
 
-#### Option 4: Discard
+#### Option 5: Discard
 
 **Confirm first:**
 ```
@@ -164,11 +208,11 @@ Before merging or creating a PR, invoke `ed3d-extending-claude:project-claude-li
 **If librarian reports no updates needed:** Proceed with chosen option.
 **If librarian subagent is not available:** skip this step, saying aloud that you're skipping it because the `ed3d-extending-claude` plugin is not available.
 
-**Skip this step for Option 4 (Discard).**
+**Skip this step for Options 3 (Soft Reset), 4 (Keep As-Is), and 5 (Discard).**
 
 ### Step 6: Cleanup Worktree
 
-**For Options 1, 2, 4:**
+**For Options 1, 2, 5:**
 
 Check if in worktree:
 ```bash
@@ -180,11 +224,11 @@ If yes:
 git worktree remove <worktree-path>
 ```
 
-**For Option 3:** Keep worktree.
+**For Options 3 and 4:** Keep worktree.
 
 ### Step 7: Remind About Test Plan
 
-**For Options 1, 2, and 3:**
+**For Options 1, 2, 3, and 4:**
 
 If a human test plan was generated (check `docs/test-plans/`), remind the user:
 
@@ -199,7 +243,7 @@ This documents:
 Review before considering this work fully complete.
 ```
 
-**Skip for Option 4 (Discard).**
+**Skip for Option 5 (Discard).**
 
 ## Quick Reference
 
@@ -207,8 +251,9 @@ Review before considering this work fully complete.
 |--------|-------|------|----------------|---------------|----------------|-------------------|
 | 1. Merge locally | ✓ | - | ✓ | - | ✓ | ✓ |
 | 2. Create PR | - | ✓ | ✓ | ✓ | - | ✓ |
-| 3. Keep as-is | - | - | - | ✓ | - | ✓ |
-| 4. Discard | - | - | - | - | ✓ (force) | - |
+| 3. Soft reset | - | - | - | ✓ | - | ✓ |
+| 4. Keep as-is | - | - | - | ✓ | - | ✓ |
+| 5. Discard | - | - | - | - | ✓ (force) | - |
 
 ## Common Mistakes
 
@@ -218,11 +263,11 @@ Review before considering this work fully complete.
 
 **Open-ended questions**
 - **Problem:** "What should I do next?" → ambiguous
-- **Fix:** Present exactly 4 structured options
+- **Fix:** Present exactly 5 structured options
 
 **Automatic worktree cleanup**
-- **Problem:** Remove worktree when might need it (Option 2, 3)
-- **Fix:** Only cleanup for Options 1 and 4
+- **Problem:** Remove worktree when might need it (Option 2, 3, 4)
+- **Fix:** Only cleanup for Options 1 and 5
 
 **No confirmation for discard**
 - **Problem:** Accidentally delete work
@@ -238,10 +283,10 @@ Review before considering this work fully complete.
 
 **Always:**
 - Verify tests before offering options
-- Present exactly 4 options
-- Get typed confirmation for Option 4
-- Clean up worktree for Options 1 & 4 only
-- Remind about human test plan for Options 1, 2 & 3 (if exists)
+- Present exactly 5 options
+- Get typed confirmation for Option 5
+- Clean up worktree for Options 1 & 5 only
+- Remind about human test plan for Options 1, 2, 3 & 4 (if exists)
 
 ## Integration
 
