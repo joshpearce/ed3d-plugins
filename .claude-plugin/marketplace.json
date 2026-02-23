@@ -21,7 +21,7 @@
         {
             "name": "ed3d-plan-and-execute",
             "description": "Planning and execution workflows for Claude Code. Based on obra/superpowers.",
-            "version": "1.20.0",
+            "version": "1.10.2",
             "source": "./plugins/ed3d-plan-and-execute",
             "author": {
                 "name": "Ed",
@@ -62,8 +62,8 @@
         },
         {
             "name": "ed3d-extending-claude",
-            "description": "Knowledge skills for extending Claude Code: creating plugins, commands, agents, skills, hooks, and MCP servers",
-            "version": "1.0.4",
+            "description": "Knowledge skills for extending Claude Code: creating plugins, commands, agents, skills, hooks, MCP servers, and marketplace management",
+            "version": "1.1.0",
             "source": "./plugins/ed3d-extending-claude",
             "author": {
                 "name": "Ed",
