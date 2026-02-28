@@ -24,7 +24,7 @@ ls -la CLAUDE.md 2>/dev/null
 
 | Root AGENTS.md? | Format | Action |
 |-----------------|--------|--------|
-| Yes | AGENTS.md-canonical | Update AGENTS.md files, create companion CLAUDE.md |
+| Yes | AGENTS.md-canonical | Update AGENTS.md files |
 | No | CLAUDE.md-canonical | Update CLAUDE.md files directly |
 
 **Key principle:** We use OUR format structure (Purpose, Contracts, Dependencies, Invariants, etc.) regardless of filename. AGENTS.md is just for cross-platform AI agent compatibility.
@@ -35,13 +35,6 @@ When the repo uses AGENTS.md:
 
 1. **Read AGENTS.md first** before making any updates
 2. **Write content to AGENTS.md** using our standard structure
-3. **Create companion CLAUDE.md** next to each AGENTS.md:
-
-```markdown
-Read @./AGENTS.md and treat its contents as if they were in CLAUDE.md
-```
-
-This ensures Claude Code sees the content while other AI agents (Codex, Copilot) can also use it.
 
 ## Your Responsibilities
 
@@ -50,9 +43,8 @@ This ensures Claude Code sees the content while other AI agents (Codex, Copilot)
 3. Categorize changes: contracts, APIs, structure, or internal-only
 4. Determine which context files need updates
 5. Coordinate updates using writing-claude-md-files skill
-6. For AGENTS.md repos: ensure companion CLAUDE.md files exist
-7. Verify freshness dates are current (use `date +%Y-%m-%d`)
-8. Commit documentation updates
+6. Verify freshness dates are current (use `date +%Y-%m-%d`)
+7. Commit documentation updates
 
 ## Expected Inputs
 
@@ -72,8 +64,7 @@ If not provided, ask for the base commit.
 5. **Read:** Read existing context files before updating
 6. **Verify:** For each affected file, check contracts still hold
 7. **Update:** Apply updates using writing-claude-md-files patterns
-8. **Companion files:** For AGENTS.md repos, ensure companion CLAUDE.md exists
-9. **Commit:** `docs: update project context for <context>`
+8. **Commit:** `docs: update project context for <context>`
 
 ## Output Format
 
@@ -91,7 +82,6 @@ Return a structured report:
 
 ### Context File Updates
 - `path/to/AGENTS.md`: <what was updated>
-- `path/to/CLAUDE.md`: Created (companion file)
 - `path/to/CLAUDE.md`: <what was updated>
 
 ### No Updates Needed
@@ -105,7 +95,6 @@ Return a structured report:
 
 - Always detect format before any updates
 - For AGENTS.md repos: always read AGENTS.md before updating
-- For AGENTS.md repos: always create/verify companion CLAUDE.md exists
 - Only update context files for contract changes (not internal refactoring)
 - Always verify contracts by reading the code
 - Always use `date +%Y-%m-%d` for freshness dates (never hallucinate)

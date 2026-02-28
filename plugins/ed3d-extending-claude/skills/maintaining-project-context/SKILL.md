@@ -28,7 +28,7 @@ ls -la CLAUDE.md 2>/dev/null
 
 | Root AGENTS.md? | Format | Action |
 |-----------------|--------|--------|
-| Yes | AGENTS.md-canonical | Update AGENTS.md files, create companion CLAUDE.md |
+| Yes | AGENTS.md-canonical | Update AGENTS.md files |
 | No | CLAUDE.md-canonical | Update CLAUDE.md files directly |
 
 **Key principle:** We use OUR format structure (Purpose, Contracts, Dependencies, Invariants, etc.) regardless of filename. AGENTS.md is just for cross-platform AI agent compatibility.
@@ -39,11 +39,6 @@ When the repo uses AGENTS.md:
 
 1. **Read AGENTS.md first** before making any updates
 2. **Write content to AGENTS.md** using our standard structure
-3. **Create companion CLAUDE.md** next to each AGENTS.md with exactly this content:
-
-```markdown
-Read @./AGENTS.md and treat its contents as if they were in CLAUDE.md
-```
 
 ## When to Update Context Files
 
@@ -91,7 +86,7 @@ For each significant change, determine which context file should document it:
 
 **Hierarchy rule:** Information belongs at the lowest level where it applies. Domain-specific contracts go in domain files, not root.
 
-**For AGENTS.md-canonical repos:** When creating new domain context files, create both `AGENTS.md` (with content) and `CLAUDE.md` (companion pointer).
+**For AGENTS.md-canonical repos:** When creating new domain context files, create `AGENTS.md` with content.
 
 ### Step 3: Verify Contracts Still Hold
 
@@ -128,10 +123,6 @@ grep -r "from '\.\." <domain>/
 1. Create `<domain>/AGENTS.md` using template from writing-claude-md-files
 2. Document purpose, contracts, dependencies, invariants
 3. Set freshness date
-4. Create companion `<domain>/CLAUDE.md`:
-   ```markdown
-   Read @./AGENTS.md and treat its contents as if they were in CLAUDE.md
-   ```
 
 ### Step 5: Commit Documentation Updates
 
@@ -152,7 +143,7 @@ Has code changed?
         └─ Contracts/APIs/structure → Continue
             │
             ├─ New domain created?
-            │   ├─ AGENTS.md repo → Create AGENTS.md + companion CLAUDE.md
+            │   ├─ AGENTS.md repo → Create AGENTS.md
             │   └─ CLAUDE.md repo → Create CLAUDE.md
             │
             ├─ Existing domain changed?
@@ -188,7 +179,6 @@ Has code changed?
 | Skipping verification | Read the code, confirm contracts hold |
 | Skipping format detection | Always check for AGENTS.md first |
 | Writing AGENTS.md without reading | Always read existing content before updating |
-| Forgetting companion CLAUDE.md | AGENTS.md repos need both files |
 
 ## Integration Points
 
