@@ -6,6 +6,8 @@ user-invocable: false
 
 # Writing Claude Directives
 
+**REQUIRED:** Also apply ed3d-extending-claude:prompt-security-hardening when using this skill. Directives that demonstrate unsafe secrets handling teach agents to leak secrets.
+
 ## Core Principles
 
 **1. Claude is smart.** Only write what it doesn't already know. Challenge each line: does this justify its token cost?

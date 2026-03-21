@@ -1,5 +1,63 @@
 # Changelog
 
+## ed3d-session-reflection 0.2.0
+
+**New:**
+- `/export-session-as-markdown` skill for exporting sessions as GitHub-flavored Markdown
+- `reduce-transcript.py` now supports `--markdown` flag for full Markdown export with metadata header, collapsible tool results, and thinking blocks
+- Conversation reviewer now detects agent-discovered multi-step workflows as automation candidates (not just user-directed ones)
+- Conversation reviewer suggests build system improvements using the project's existing tooling
+
+## ed3d-session-reflection 0.1.0
+
+EXPERIMENTAL. Session awareness and conversation review tooling.
+
+**New:**
+- SessionStart hook that injects session ID and transcript path into Claude's context
+- `reduce-transcript.py` script that strips JSONL transcripts to token-efficient text (78-99% reduction)
+- `conversation-reviewer` Opus agent that analyzes sessions for prompting effectiveness, agent performance, and environment gaps
+- `/review-session` skill for single-session deep review
+- `/review-recent-sessions` skill for parallel multi-session review with cross-session synthesis
+
+## ed3d-hook-security-hardening 1.0.1
+
+Expanded detection coverage to address common Claude-generated access patterns.
+
+**New:**
+- Detect polyglot env readers (python3, node, ruby, perl, awk reading environment variables)
+- Detect `declare -p` on secret variables
+- Detect `curl -d @.env` and `curl -F file=@.env` file exfiltration
+- Detect `while read` loops on secret files
+- Detect `git remote set-url` and `git config` with embedded tokens
+- Detect file reading via sed, awk, strings, base64, xxd, od, dd, tee, perl
+- Detect `grep '' .env` (empty/wildcard pattern reads entire file)
+- 197 tests for bash secrets hook, 37 tests for sensitive file hook
+
+**Fixed:**
+- Echo check now catches all secret variables in multi-variable commands
+- Dot-source regex correctly catches `. .env` syntax
+- Handle non-string command input without crashing
+
+## ed3d-hook-security-hardening 1.0.0
+
+Hook plugin that catches common secrets leakage patterns in Claude Code sessions.
+
+**New:**
+- PreToolUse hook on Bash: detects echoing secret env vars, printenv, env|grep without -q, cat/source on .env files, grep on shell configs showing values, tokens in git clone URLs, tokens in curl URL parameters
+- PostToolUse hook on Write/Edit: reminds about gitignore and chmod 600 after writing to sensitive files (.env, .envrc, credentials, secrets, .pem, .key, .netrc, .npmrc)
+- Uses shlex tokenization for robust command parsing over fragile regex
+- High-confidence leaks (echo/printenv/length/substring) are denied; medium-confidence patterns (cat .env, source .env, env|grep) force user approval
+
+## ed3d-extending-claude 1.1.1
+
+Add prompt-security-hardening skill and require it from writing-claude-directives.
+
+**New:**
+- `prompt-security-hardening` skill: 7 rules covering secrets leakage into LLM context, env var existence checks, file permissions, gitignore verification, URL/process token exposure, input sanitization, and context contamination from files
+
+**Changed:**
+- `writing-claude-directives`: now unconditionally requires prompt-security-hardening as a subskill
+
 ## ed3d-house-style 1.0.3
 
 Relax FCIS file classification to target only files with runtime behavior.
