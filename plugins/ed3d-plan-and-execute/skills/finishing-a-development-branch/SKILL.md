@@ -38,16 +38,20 @@ Stop. Don't proceed to Step 2.
 
 **If tests pass:** Continue to Step 2.
 
-### Step 2: Determine Base Branch
+### Step 2: Determine Work-Start Commit
 
-```bash
-# Try common base branches
-git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null
-```
+The work-start commit is the commit immediately before the first implementation commit. This is needed for diffs, soft resets, and PR scope.
 
-Or ask: "This branch split from main - is that correct?"
+**Priority order:**
+
+1. **Caller-provided BASE_SHA** — If invoked from `executing-an-implementation-plan`, that skill records BASE_SHA at the start of execution. Use it. This is the most reliable source.
+2. **Ask the user** — "What commit marks the start of this work?" (SHA, branch name, or tag)
+
+**Do NOT compute `git merge-base HEAD main` as a fallback.** Feature branches are often created from release branches (e.g., `release/2026.03.24`), not `main`. Using the wrong branch returns a commit far before the actual work started, causing soft resets and diffs to include unrelated changes.
 
 ### Step 3: Present Options
+
+**For Options 1 and 2**, you need to know the target branch for merge/PR. If the user chooses one of these, ask which branch to target (do not assume `main`).
 
 Present exactly these 5 options in `AskUserQuestion`.
 
@@ -110,14 +114,14 @@ Then: Update project context (Step 5), then cleanup worktree (Step 6)
 #### Option 3: Soft Reset for Review
 
 ```bash
-# Determine merge base
-MERGE_BASE=$(git merge-base HEAD <base-branch>)
+# Use work-start commit from Step 2
+WORK_START=<work-start-commit>
 
 # Tag current HEAD for safety
 git tag backup/<feature-branch>
 
 # Distill commit messages into a summary
-git log --pretty=format:"%s%n%n%b" $MERGE_BASE..HEAD
+git log --pretty=format:"%s%n%n%b" $WORK_START..HEAD
 ```
 
 Use the commit log output to distill a coherent, concise commit message summarizing the work. Write it to `.COMMIT_MSG` in the project root with these instructions at the top:
@@ -136,8 +140,8 @@ Use the commit log output to distill a coherent, concise commit message summariz
 Lines starting with `#` are stripped by `git commit -t` (template mode), which opens the editor with this content.
 
 ```bash
-# Soft reset to merge base
-git reset --soft $MERGE_BASE
+# Soft reset to work-start commit
+git reset --soft $WORK_START
 ```
 
 Report:
@@ -256,6 +260,10 @@ Review before considering this work fully complete.
 | 5. Discard | - | - | - | - | ✓ (force) | - |
 
 ## Common Mistakes
+
+**Using `git merge-base HEAD main` to find work start**
+- **Problem:** Feature branches created from release branches (not `main`) return a merge-base far before the actual work started. Soft resets and diffs include dozens of unrelated commits.
+- **Fix:** Use the BASE_SHA recorded at the start of execution, or ask the user.
 
 **Skipping test verification**
 - **Problem:** Merge broken code, create failing PR
