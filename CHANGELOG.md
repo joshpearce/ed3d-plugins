@@ -1,5 +1,10 @@
 # Changelog
 
+## ed3d-plan-and-execute 1.10.4
+
+**Fixed:**
+- Finish skill now uses work-start commit instead of `git merge-base`, preventing incorrect diffs on branches created from non-main bases
+
 ## ed3d-session-reflection 0.2.0
 
 **New:**
