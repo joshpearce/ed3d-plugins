@@ -1,6 +1,30 @@
 # Changelog
 
-## ed3d-plan-and-execute 1.10.4
+## [ed3d-house-style] [1.1.0]
+
+Add Rust house-style skill.
+
+**New:**
+- `howto-code-in-rust` skill covering `thiserror`+`miette` error handling, type system patterns, async/serde conventions, testing crates, exact-version dependency pinning, and module organization
+- `coding-effectively` now lists `howto-code-in-rust` as a conditional sub-skill for Rust code
+
+## ed3d-research-agents 1.1.0
+
+Stable repo caching for the remote-code-researcher agent.
+
+**Changed:**
+- Remote code researcher now caches cloned repos at a stable path (`$TMPDIR/claude-code-repos/<host>/<org>/<repo>`) instead of using `mktemp` each time
+- Subsequent invocations against the same repo fetch-and-reset instead of re-cloning
+- Removed cleanup step — cached repos persist across agent invocations
+
+## ed3d-plan-and-execute 1.11.0
+
+Remove SessionStart hook that injected the entire `using-plan-and-execute` skill into context on every session start.
+
+**Fixed:**
+- Removed SessionStart hook that wasted context tokens by injecting the full SKILL.md content as additionalContext on every conversation
+
+## ed3d-plan-and-execute 1.11.1
 
 **Fixed:**
 - Finish skill now uses work-start commit instead of `git merge-base`, preventing incorrect diffs on branches created from non-main bases
